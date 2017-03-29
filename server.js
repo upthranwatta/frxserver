@@ -37,225 +37,225 @@ app.get('/',function(req,res){
 });
 
 
-app.get('/monitorGraph',function(req,res){
-	res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+// app.get('/monitorGraph',function(req,res){
+// 	res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
  
-	var unit = req.query.unit;
-	var type = req.query.type;
-	var monitorCount = 0;
-	var a,b,c=0;
-	var date,minutes,hours,time;
-	console.log('MONITOR GRAPH');
-	var symbolValue;
-	var symbolMark=new Array();
-	var cycle=0;
+// 	var unit = req.query.unit;
+// 	var type = req.query.type;
+// 	var monitorCount = 0;
+// 	var a,b,c=0;
+// 	var date,minutes,hours,time;
+// 	console.log('MONITOR GRAPH');
+// 	var symbolValue;
+// 	var symbolMark=new Array();
+// 	var cycle=0;
 
-	monitorGraph(function(err,result){
+// 	monitorGraph(function(err,result){
 
-		sendMail();
+// 		sendMail();
 
-		result.Rates.Rate.forEach(function(item){
-			var monitorGraph={};
-		    if(item.$.Symbol==unit){
-		    	console.log('added');
+// 		result.Rates.Rate.forEach(function(item){
+// 			var monitorGraph={};
+// 		    if(item.$.Symbol==unit){
+// 		    	console.log('added');
 
-		    	var intervalMonitor = setInterval(function(){ 
-		    		callWebService(function(err,result){
+// 		    	var intervalMonitor = setInterval(function(){ 
+// 		    		callWebService(function(err,result){
 					  
-					  	result.Rates.Rate.forEach(function(item){
-					          monitorGraphList.forEach(function(objMonitoring){
-					            if(item.$.Symbol==objMonitoring.unit){
-									b = objMonitoring.bid;
-									// console.log('b =' +b);
-									date = new Date();
-				                    minutes = String(date.getMinutes());
-				                    hours = String(date.getHours());
-				                    time = hours.concat(".",minutes);
+// 					  	result.Rates.Rate.forEach(function(item){
+// 					          monitorGraphList.forEach(function(objMonitoring){
+// 					            if(item.$.Symbol==objMonitoring.unit){
+// 									b = objMonitoring.bid;
+// 									// console.log('b =' +b);
+// 									date = new Date();
+// 				                    minutes = String(date.getMinutes());
+// 				                    hours = String(date.getHours());
+// 				                    time = hours.concat(".",minutes);
 
-					            	if(type=="buy"){
-					            		a = parseFloat(item.Ask.toString()).toFixed(5);
-					            		symbolValue = parseFloat(b - a).toFixed(5);
-					            		console.log('val '+ symbolValue);
-					            		if(symbolValue>0){//making profit
-					            			console.log('making profit by buying ');
-					            			symbolMark[cycle]="PLUS";
-					            			if(cycle>1){
-					            				if(symbolMark[cycle]==symbolMark[cycle-1]){
+// 					            	if(type=="buy"){
+// 					            		a = parseFloat(item.Ask.toString()).toFixed(5);
+// 					            		symbolValue = parseFloat(b - a).toFixed(5);
+// 					            		console.log('val '+ symbolValue);
+// 					            		if(symbolValue>0){//making profit
+// 					            			console.log('making profit by buying ');
+// 					            			symbolMark[cycle]="PLUS";
+// 					            			if(cycle>1){
+// 					            				if(symbolMark[cycle]==symbolMark[cycle-1]){
 
-					            					if(objMonitoring.sentLastMailtime==undefined){
+// 					            					if(objMonitoring.sentLastMailtime==undefined){
                             
-							                            console.log("SAME - SEND AN EMAIL first time");
-							                            send
-							                            objMonitoring.sentLastMailtime = time;
+// 							                            console.log("SAME - SEND AN EMAIL first time");
+// 							                            send
+// 							                            objMonitoring.sentLastMailtime = time;
 
-							                          }else{
-							                            var x = time - objMonitoring.sentLastMailtime ;
-							                            if(x>0.5){
-							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
-							                            }else{
-							                              console.log('has send within 5 min '+time);
-							                            }
-							                          }
+// 							                          }else{
+// 							                            var x = time - objMonitoring.sentLastMailtime ;
+// 							                            if(x>0.5){
+// 							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
+// 							                            }else{
+// 							                              console.log('has send within 5 min '+time);
+// 							                            }
+// 							                          }
 
-					            				}else{
-					            					//first cycle
-					            					if(objMonitoring.sentLastMailtime==undefined){
+// 					            				}else{
+// 					            					//first cycle
+// 					            					if(objMonitoring.sentLastMailtime==undefined){
                             
-							                            console.log("SAME - SEND AN EMAIL first time");
-							                            objMonitoring.sentLastMailtime = time;
+// 							                            console.log("SAME - SEND AN EMAIL first time");
+// 							                            objMonitoring.sentLastMailtime = time;
 
-							                          }else{
-							                            var x = time - objMonitoring.sentLastMailtime ;
-							                            if(x>0.5){
-							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
-							                            }else{
-							                              console.log('has send within 5 min '+time);
-							                            }
-							                          }
-					            				}
+// 							                          }else{
+// 							                            var x = time - objMonitoring.sentLastMailtime ;
+// 							                            if(x>0.5){
+// 							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
+// 							                            }else{
+// 							                              console.log('has send within 5 min '+time);
+// 							                            }
+// 							                          }
+// 					            				}
 
 
-					            			}else{
-					            				console.log('first time making profit');
-			            						//send mail
+// 					            			}else{
+// 					            				console.log('first time making profit');
+// 			            						//send mail
 
-					            			}
-					            		}else{
-					            			//no profit 
-					            			console.log('no profit ');
-					            			if(Math.abs(symbolValue/objMonitoring.initialRatio)>10){
-					            				console.log('big lost');
-					            				//send mail
+// 					            			}
+// 					            		}else{
+// 					            			//no profit 
+// 					            			console.log('no profit ');
+// 					            			if(Math.abs(symbolValue/objMonitoring.initialRatio)>10){
+// 					            				console.log('big lost');
+// 					            				//send mail
 
-					            			}else{
+// 					            			}else{
 
-					            			}
+// 					            			}
 
-					            		}
+// 					            		}
 
-					            	}else{
-					            		a = parseFloat(item.Bid.toString()).toFixed(5);
-					            		symbolValue = parseFloat(b - a).toFixed(5);
-					            	}
+// 					            	}else{
+// 					            		a = parseFloat(item.Bid.toString()).toFixed(5);
+// 					            		symbolValue = parseFloat(b - a).toFixed(5);
+// 					            	}
 					       	
-					            }
-					          });  
-					    });
-					});
+// 					            }
+// 					          });  
+// 					    });
+// 					});
 					
 
-		    	},monitorGraphTimer);
+// 		    	},monitorGraphTimer);
 
 
-		    	if(type=="buy"){
-		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor,initialRatio:symbolValue};
+// 		    	if(type=="buy"){
+// 		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor,initialRatio:symbolValue};
 		    		
-		    	}else if(type=="sale"){
-		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor};
-		    	}
-		    	monitorGraphList.push(monitorGraph);
-		    	console.log(monitorGraph);
-		    	monitorCount=monitorCount+1;
-		    }
-		});      
-		res.end("sent");
-	});
+// 		    	}else if(type=="sale"){
+// 		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor};
+// 		    	}
+// 		    	monitorGraphList.push(monitorGraph);
+// 		    	console.log(monitorGraph);
+// 		    	monitorCount=monitorCount+1;
+// 		    }
+// 		});      
+// 		res.end("sent");
+// 	});
 	
 	
-});
+// });
 
-var monitorGraphList= new Array();
+// var monitorGraphList= new Array();
 
-function monitorGraph(callback){
-	callWebService(function(err,result){
-		callback(err,result);
-	});
+// function monitorGraph(callback){
+// 	callWebService(function(err,result){
+// 		callback(err,result);
+// 	});
 
-}
+// }
 
 
-app.get('/monitorGraphStop',function(req,res){
-	var unit = req.query.unit;
-	console.log("----------------stopping -----------------------------");
-	monitorGraphStop(unit,function(monitorGraphList){
+// app.get('/monitorGraphStop',function(req,res){
+// 	var unit = req.query.unit;
+// 	console.log("----------------stopping -----------------------------");
+// 	monitorGraphStop(unit,function(monitorGraphList){
 		
-		console.log(monitorGraphList);
-	});
-});
+// 		console.log(monitorGraphList);
+// 	});
+// });
 
-function monitorGraphStop(unit,callback){
-	monitorGraphList.forEach(function(objMonitoring){
+// function monitorGraphStop(unit,callback){
+// 	monitorGraphList.forEach(function(objMonitoring){
 
-		 if(unit==objMonitoring.unit){
-		 	console.log('going to stop ' + unit);
-		 	console.log(objMonitoring.monitor);
-		 	clearInterval(objMonitoring.monitor);
-
-
-monitorGraphList = monitorGraphList.filter(item => item !== objMonitoring);
-
-console.log("ARRAY" + monitorGraphList); 
+// 		 if(unit==objMonitoring.unit){
+// 		 	console.log('going to stop ' + unit);
+// 		 	console.log(objMonitoring.monitor);
+// 		 	clearInterval(objMonitoring.monitor);
 
 
+// monitorGraphList = monitorGraphList.filter(item => item !== objMonitoring);
 
-
-		 }else{
-		 	console.log('????	');
-		 }
-	});
-
-	callback(monitorGraphList);
-
-}
+// console.log("ARRAY" + monitorGraphList); 
 
 
 
-//web service 
-function callWebService(callback){
 
- var parser = new xml2js.Parser();
+// 		 }else{
+// 		 	console.log('????	');
+// 		 }
+// 	});
 
- parser.on('error', function(err) { console.log('Parser error', err); });
+// 	callback(monitorGraphList);
 
- var data = '';
- http.get('http://rates.fxcm.com/RatesXML', function(res) {
-     if (res.statusCode >= 200 && res.statusCode < 400) {
-       res.on('data', function(data_) { data += data_.toString(); });
-       res.on('end', function() {
-         // console.log('------------------DATS-----------', data);
+// }
+
+
+
+// //web service 
+// function callWebService(callback){
+
+//  var parser = new xml2js.Parser();
+
+//  parser.on('error', function(err) { console.log('Parser error', err); });
+
+//  var data = '';
+//  http.get('http://rates.fxcm.com/RatesXML', function(res) {
+//      if (res.statusCode >= 200 && res.statusCode < 400) {
+//        res.on('data', function(data_) { data += data_.toString(); });
+//        res.on('end', function() {
+//          // console.log('------------------DATS-----------', data);
          
-         parser.parseString(data, function(err, result) {
-          callback(err, result);
-         });
-       });
-     }
-   });
+//          parser.parseString(data, function(err, result) {
+//           callback(err, result);
+//          });
+//        });
+//      }
+//    });
 
-}
+// }
 
-function sendMail(){
+// function sendMail(){
 	
 
-	var mailOptions={
-		to : 'dev@icebergcoldrooms.com.au',
-		subject : 'HURRY',
-		text : 'notification'
-	}
-	console.log(mailOptions);
+// 	var mailOptions={
+// 		to : 'dev@icebergcoldrooms.com.au',
+// 		subject : 'HURRY',
+// 		text : 'notification'
+// 	}
+// 	console.log(mailOptions);
 
-	smtpTransport.sendMail(mailOptions, function(error, response){
-   	 if(error){
-        	console.log(error);
-		res.end("error");
-	 }else{
-        	console.log("Message sent: " + response.message);
-		res.end("sent");
-    	 }
-});
+// 	smtpTransport.sendMail(mailOptions, function(error, response){
+//    	 if(error){
+//         	console.log(error);
+// 		res.end("error");
+// 	 }else{
+//         	console.log("Message sent: " + response.message);
+// 		res.end("sent");
+//     	 }
+// });
 
 
-}
+// }
 
 
 
