@@ -1,26 +1,26 @@
 var express=require('express');
 var http=require('http');
-var nodemailer = require("nodemailer");
+// var nodemailer = require("nodemailer");
 var app=express();
-var xml2js =require('xml2js');
+// var xml2js =require('xml2js');
 var port = process.env.PORT || 8080;
-// var replaceall = require("replaceall");
-var fs = require('fs');
-var xml2js = require('xml2js');
-// const SMA = require('technicalindicators').SMA;
-var monitorGraphTimer = 40000;
+// // var replaceall = require("replaceall");
+// var fs = require('fs');
+// var xml2js = require('xml2js');
+// // const SMA = require('technicalindicators').SMA;
+// var monitorGraphTimer = 40000;
 
-var smtpTransport = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    auth: {
-        user: 'tharaka.ranwaththa@gmail.com',
-        pass: 'zlunbwisjmtwyquz'
-    },
-    tls: {rejectUnauthorized: false},
-    debug:true
-});
+// var smtpTransport = nodemailer.createTransport({
+//     service: 'gmail',
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     auth: {
+//         user: 'tharaka.ranwaththa@gmail.com',
+//         pass: 'zlunbwisjmtwyquz'
+//     },
+//     tls: {rejectUnauthorized: false},
+//     debug:true
+// });
 
 
 app.listen(port,function(){
