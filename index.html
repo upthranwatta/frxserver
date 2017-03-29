@@ -6,35 +6,35 @@
     $(document).ready(function(){
       var rate,unit;
 
-    //   $("#send_track").click(function(){  
+      $("#send_track").click(function(){  
 
-    //     unit=$("#unit").val();
+        unit=$("#unit").val();
 
-    //     rate=$("#rate").val();
+        rate=$("#rate").val();
 
-    //     type=$("#type").val();
+        type=$("#type").val();
         
-    //     $("#message").text("Sending .......Please wait");
+        $("#message").text("Sending .......Please wait");
 
 
-    //     $.get("http://localhost:8080/monitorGraph",{unit:unit,type:type},function(data){
-    //     if(data=="sent")
-    //     {
-    //       $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
-    //     }
-    // });
+        $.get("http://localhost:8080/monitorGraph",{unit:unit,type:type},function(data){
+        if(data=="sent")
+        {
+          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
+        }
+    });
   });
 
   $("#end_track").click(function(){  
 
-    //     unit=$("#unit").val();
-    //     $("#message").text("Deleting ....... wait");
-    //     $.get("http://localhost:8080/monitorGraphStop",{unit:unit},function(data){
-    //     if(data=="sent")
-    //     {
-    //       $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
-    //     }
-    // });
+        unit=$("#unit").val();
+        $("#message").text("Deleting ....... wait");
+        $.get("http://localhost:8080/monitorGraphStop",{unit:unit},function(data){
+        if(data=="sent")
+        {
+          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
+        }
+    });
   });
 
 // -------------
@@ -49,11 +49,11 @@
         $("#message").text("Cancelling .......Please wait");
 
 
-        // $.get("http://localhost:8080/clear_sma",{unit:unit},function(data){
-        // if(data=="sent")
-        // {
-        //   $("#message").empty().html("<p>Track "+unit+" . Cancelled !</p>");
-        // }
+        $.get("http://localhost:8080/clear_sma",{unit:unit},function(data){
+        if(data=="sent")
+        {
+          $("#message").empty().html("<p>Track "+unit+" . Cancelled !</p>");
+        }
     });
   });
 // ----------------
