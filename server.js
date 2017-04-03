@@ -33,6 +33,7 @@ app.listen(port,function(){
 /*------------------Routing Started ------------------------*/
 
 app.get('/',function(req,res){
+	console.log('smthing there.....');
 	res.sendfile('index.html');
 });
 
