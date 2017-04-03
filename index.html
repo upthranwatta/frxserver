@@ -16,7 +16,7 @@
         
         $("#message").text("Sending .......Please wait");
 
-        var test='http://localhost:3000';
+        // var live='http://localhost:3000';
         var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000';
         $.get(live+'/monitorGraph',{unit:unit,type:type},function(data){
         if(data=="sent")
