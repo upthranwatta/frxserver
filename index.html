@@ -16,14 +16,9 @@
         
         $("#message").text("Sending .......Please wait");
 
-
-
-
-
-        
-
-
-        $.get("http://localhost:8080/monitorGraph",{unit:unit,type:type},function(data){
+        var test='http://localhost:3000';
+        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000';
+        $.get(live+'/monitorGraph',{unit:unit,type:type},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
@@ -35,7 +30,7 @@
 
         unit=$("#unit").val();
         $("#message").text("Deleting ....... wait");
-        $.get("http://localhost:8080/monitorGraphStop",{unit:unit},function(data){
+        $.get(live+'/monitorGraphStop',{unit:unit},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
@@ -55,7 +50,7 @@
         $("#message").text("Cancelling .......Please wait");
 
 
-        $.get("http://localhost:8080/clear_sma",{unit:unit},function(data){
+        $.get(live+'/clear_sma',{unit:unit},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Cancelled !</p>");
