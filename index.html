@@ -5,6 +5,8 @@
   <script>
     $(document).ready(function(){
       var rate,unit;
+       // var live='http://localhost:3000/';
+        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
 
       $("#send_track").click(function(){  
 
@@ -16,9 +18,10 @@
         
         $("#message").text("Sending .......Please wait");
 
-        // var live='http://localhost:3000';
-        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000';
-        $.get(live+'/monitorGraph',{unit:unit,type:type},function(data){
+       
+
+
+        $.get(live+'monitorGraph',{unit:unit,type:type},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
@@ -30,7 +33,7 @@
 
         unit=$("#unit").val();
         $("#message").text("Deleting ....... wait");
-        $.get(live+'/monitorGraphStop',{unit:unit},function(data){
+        $.get(live+'monitorGraphStop',{unit:unit},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
@@ -50,7 +53,7 @@
         $("#message").text("Cancelling .......Please wait");
 
 
-        $.get(live+'/clear_sma',{unit:unit},function(data){
+        $.get(live+'clear_sma',{unit:unit},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Cancelled !</p>");
@@ -58,7 +61,31 @@
     });
   });
 // ----------------
+$("#Tell_Me_When").click(function(){  
 
+        var unit=$("#unit").val();
+        var rate =$("#rate").val();
+        $("#message").text("wait......");
+        $.get(live +'telMeWhen',{unit:unit,rate:rate},function(data){
+        if(data=="sent")
+        {
+          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
+        }
+    });
+  });
+// ==================
+
+ $("#Tell_Me_When_Stop").click(function(){  
+
+        unit=$("#unit").val();
+        $("#message").text(" ....... wait");
+        $.get(live+'monitorRAteStop',{unit:unit},function(data){
+        if(data=="sent")
+        {
+          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
+        }
+    });
+  });
 
 
 
@@ -202,6 +229,12 @@ p
 
 <button id="clear_sma">SMA CLEAR</button><br>
 <br>
+
+</br>
+
+<button id="Tell_Me_When">Tell Me When</button>
+<input id='rate' type="text" name="rate" value='rate is'/>
+<button id="Tell_Me_When_Stop">STOP</button>
 </br>
 
 <span id="message"></span>

@@ -31,60 +31,32 @@ app.listen(port,function(){
 /*------------------SMTP Over-----------------------------*/
 
 /*------------------Routing Started ------------------------*/
-var monitorRateList= new Array();
+
 
 app.get('/telMeWhen',function(req,result){
 	console.log('I ll email you:P');
-	var unit = req.query.unit;
-	var type = req.query.type;
-	var rate = req.query.rate;
-	var monitorRate;
 
-	monitorGraph(function(err,result){
-
-		
-
-		result.Rates.Rate.forEach(function(item){
-			var monitorRate={};
-
+	result.Rates.Rate.forEach(function(item){
+			var monitorGraph={};
 		    if(item.$.Symbol==unit){
-		    	console.log('added');
-
 		    	var intervalMonitor = setInterval(function(){ 
 		    		callWebService(function(err,result){
 					  
 					  	result.Rates.Rate.forEach(function(item){
-					          monitorRateList.forEach(function(objMonitoring){
-					           
-					          	if(item.$.Symbol==objMonitoring.unit){
-						          	console.log('monitor ask  '+ objMonitoring.ask + ' Now Bid ' + item.Bid);
-					            	if(type=="buy"){
-					            		if(objMonitoring.rate<item.Bid){
-					            			console.log('send an email');
-					            			sendMail();
-					            			
-					            		}else{
-					            			console.log('no send email');
-					            			
-					            		}
-					            	}else{
+					          monitorGraphList.forEach(function(objMonitoring){
+					            if(item.$.Symbol==objMonitoring.unit){
+					            }else{
 
-					            	}
-							    }else{
-
-						        }
-
+					            }
 					          });
-					     });
-					});
-				},10000);	            
+					    }); 
+					});    
+				},1000);
 
-		    	monitorRate={id:1,Date:new Date(),unit:unit,type:type,rate:rate,bid:item.Bid,ask:item.Ask,monitor:intervalMonitor};
-				monitorRateList.push(monitorRate);
 			}else{
 
-			}	
-		});	
+			}         			
+
 	});
 
 });
@@ -267,41 +239,6 @@ console.log("ARRAY" + monitorGraphList);
 	});
 
 	callback(monitorGraphList);
-
-}
-
-app.get('/monitorRateStop',function(req,res){
-	var unit = req.query.unit;
-	console.log("----------------stopping -----------------------------");
-	monitorRateStop(unit,function(monitorRateList){
-		
-		console.log(monitorRateList);
-	});
-});
-
-
-function monitorRateStop(unit,callback){
-	monitorRateList.forEach(function(objMonitoring){
-
-		 if(unit==objMonitoring.unit){
-		 	console.log('going to stop ' + unit);
-		 	console.log(objMonitoring.monitor);
-		 	clearInterval(objMonitoring.monitor);
-
-
-monitorRateList = monitorRateList.filter(item => item !== objMonitoring);
-
-console.log("ARRAY" + monitorRateList); 
-
-
-
-
-		 }else{
-		 	console.log('????	');
-		 }
-	});
-
-	callback(monitorRateList);
 
 }
 
