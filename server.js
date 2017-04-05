@@ -42,13 +42,12 @@ app.get('/telMeWhen',function(req,result){
 
 	monitorGraph(function(err,result){
 
-		
-
 		result.Rates.Rate.forEach(function(item){
 			var monitorRate={};
+			var date,minutes,hours,time;
 
 		    if(item.$.Symbol==unit){
-		    	console.log('added');
+		    	console.log('added '+ type);
 
 		    	var intervalMonitor = setInterval(function(){ 
 		    		callWebService(function(err,result){
@@ -58,26 +57,53 @@ app.get('/telMeWhen',function(req,result){
 					           
 					          	if(item.$.Symbol==objMonitoring.unit){
 						          	console.log('monitor ask  '+ objMonitoring.ask + ' Now Bid ' + item.Bid);
+						          	console.log(type);
+
+						          	date = new Date();
+				                    minutes = String(date.getMinutes());
+				                    hours = String(date.getHours());
+				                    time = hours.concat(".",minutes);
+
+
+
 					            	if(type=="buy"){
 					            		if(objMonitoring.rate<item.Bid){
 					            			console.log('send an email');
-					            			sendMail();
+
+					            			if(objMonitoring.sentLastMailtime==undefined){
+					            				sendMail();
+					            				objMonitoring.sentLastMailtime = time;
+					            			console.log('1 time');
+
+					            			}else{
+					            				var timeDiff = time - objMonitoring.sentLastMailtime ;
+					            				console.log('many times');
+					                            if(timeDiff>0.5){
+					                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
+					                                objMonitoring.sentLastMailtime = time;
+					                                sendMail();
+					                            }else{
+					                              console.log('has send within 5 min '+time);
+					                            }
+
+					            			}
+					            			
 					            			
 					            		}else{
-					            			console.log('no send email');
+					            			console.log('not passed');
 					            			
 					            		}
 					            	}else{
-
+					            		
 					            	}
 							    }else{
-
+							    	
 						        }
 
 					          });
 					     });
 					});
-				},10000);	            
+				},30000);	            
 
 		    	monitorRate={id:1,Date:new Date(),unit:unit,type:type,rate:rate,bid:item.Bid,ask:item.Ask,monitor:intervalMonitor};
 				monitorRateList.push(monitorRate);
@@ -146,7 +172,7 @@ app.get('/monitorGraph',function(req,res){
 					            					if(objMonitoring.sentLastMailtime==undefined){
                             
 							                            console.log("SAME - SEND AN EMAIL first time");
-							                            send
+							                            
 							                            objMonitoring.sentLastMailtime = time;
 
 							                          }else{

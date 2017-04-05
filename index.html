@@ -5,8 +5,8 @@
   <script>
     $(document).ready(function(){
       var rate,unit;
-       // var live='http://localhost:3000/';
-        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
+       var live='http://localhost:3000/';
+        // var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
 
       $("#send_track").click(function(){  
 
@@ -65,8 +65,10 @@ $("#Tell_Me_When").click(function(){
 
         var unit=$("#unit").val();
         var rate =$("#rate").val();
+        var type =$("#type").val();
+
         $("#message").text("wait......");
-        $.get(live +'telMeWhen',{unit:unit,rate:rate},function(data){
+        $.get(live +'telMeWhen',{unit:unit,rate:rate,type:type},function(data){
         if(data=="sent")
         {
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
