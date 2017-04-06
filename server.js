@@ -71,7 +71,7 @@ app.get('/telMeWhen',function(req,result){
 					            			console.log('send an email');
 
 					            			if(objMonitoring.sentLastMailtime==undefined){
-					            				sendMail();
+					            				sendMail("first time ",unit);
 					            				objMonitoring.sentLastMailtime = time;
 					            			console.log('1 time');
 
@@ -81,7 +81,7 @@ app.get('/telMeWhen',function(req,result){
 					                            if(timeDiff>0.5){
 					                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
 					                                objMonitoring.sentLastMailtime = time;
-					                                sendMail();
+					                                sendMail("more than 5 hit again",unit);
 					                            }else{
 					                              console.log('has send within 5 min '+time);
 					                            }
@@ -103,7 +103,7 @@ app.get('/telMeWhen',function(req,result){
 					          });
 					     });
 					});
-				},30000);	            
+				},5000);	            
 
 		    	monitorRate={id:1,Date:new Date(),unit:unit,type:type,rate:rate,bid:item.Bid,ask:item.Ask,monitor:intervalMonitor};
 				monitorRateList.push(monitorRate);
@@ -111,7 +111,9 @@ app.get('/telMeWhen',function(req,result){
 
 			}	
 		});	
+
 	});
+	result.end("sent");
 
 });
 
@@ -139,7 +141,7 @@ app.get('/monitorGraph',function(req,res){
 
 	monitorGraph(function(err,result){
 
-		sendMail();
+		// sendMail();
 
 		result.Rates.Rate.forEach(function(item){
 			var monitorGraph={};
@@ -303,6 +305,7 @@ app.get('/monitorRateStop',function(req,res){
 		
 		console.log(monitorRateList);
 	});
+	res.end("sent");
 });
 
 
@@ -317,7 +320,7 @@ function monitorRateStop(unit,callback){
 
 monitorRateList = monitorRateList.filter(item => item !== objMonitoring);
 
-console.log("ARRAY" + monitorRateList); 
+console.log("ARRAY Length " + monitorRateList.length); 
 
 
 
@@ -358,13 +361,13 @@ function callWebService(callback){
 
 }
 
-function sendMail(){
+function sendMail(subject,unit){
 	
 
 	var mailOptions={
 		to : 'dev@icebergcoldrooms.com.au',
-		subject : 'HURRY',
-		text : 'notification'
+		subject : subject,
+		text : unit +'has hit the point'
 	}
 	console.log(mailOptions);
 

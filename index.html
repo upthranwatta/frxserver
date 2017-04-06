@@ -5,8 +5,8 @@
   <script>
     $(document).ready(function(){
       var rate,unit;
-       var live='http://localhost:3000/';
-        // var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
+       // var live='http://localhost:3000/';
+        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
 
       $("#send_track").click(function(){  
 
@@ -69,8 +69,10 @@ $("#Tell_Me_When").click(function(){
 
         $("#message").text("wait......");
         $.get(live +'telMeWhen',{unit:unit,rate:rate,type:type},function(data){
+          // alert('a') ;
         if(data=="sent")
         {
+
           $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
         }
     });
@@ -78,7 +80,7 @@ $("#Tell_Me_When").click(function(){
 // ==================
 
  $("#Tell_Me_When_Stop").click(function(){  
-
+        // alert('s') ;
         unit=$("#unit").val();
         $("#message").text(" ....... wait");
         $.get(live+'monitorRAteStop',{unit:unit},function(data){
