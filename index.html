@@ -5,61 +5,13 @@
   <script>
     $(document).ready(function(){
       var rate,unit;
-       // var live='http://localhost:3000/';
-        var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
-
-      $("#send_track").click(function(){  
-
-        unit=$("#unit").val();
-
-        rate=$("#rate").val();
-
-        type=$("#type").val();
-        
-        $("#message").text("Sending .......Please wait");
-
-       
+       var live='http://localhost:3000/';
+        // var live ='http://ec2-54-208-49-248.compute-1.amazonaws.com:3000/';
 
 
-        $.get(live+'monitorGraph',{unit:unit,type:type},function(data){
-        if(data=="sent")
-        {
-          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
-        }
-    });
-  });
-
-  $("#end_track").click(function(){  
-
-        unit=$("#unit").val();
-        $("#message").text("Deleting ....... wait");
-        $.get(live+'monitorGraphStop',{unit:unit},function(data){
-        if(data=="sent")
-        {
-          $("#message").empty().html("<p>Track "+unit+" . Please check inbox !</p>");
-        }
-    });
-  });
-
-// -------------
-  $("#clear_sma").click(function(){  
-    
-        unit=$("#unit").val();
-
-        rate=$("#rate").val();
-
-        type=$("#type").val();
-        
-        $("#message").text("Cancelling .......Please wait");
 
 
-        $.get(live+'clear_sma',{unit:unit},function(data){
-        if(data=="sent")
-        {
-          $("#message").empty().html("<p>Track "+unit+" . Cancelled !</p>");
-        }
-    });
-  });
+
 // ----------------
 $("#Tell_Me_When").click(function(){  
 
@@ -220,21 +172,6 @@ p
 <!-- <br>
 </br> -->
 
-<button id="send_track">Track</button><br>
-<br>
-
-<button id="end_track">END Track</button><br>
-<br>
-</br>
-
-<button id="send_sma">SMA TRACK</button><br>
-<br>
-
-
-<button id="clear_sma">SMA CLEAR</button><br>
-<br>
-
-</br>
 
 <button id="Tell_Me_When">Tell Me When</button>
 <input id='rate' type="text" name="rate" value='rate is'/>

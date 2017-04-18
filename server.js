@@ -54,9 +54,13 @@ app.get('/telMeWhen',function(req,result){
 					  
 					  	result.Rates.Rate.forEach(function(item){
 					          monitorRateList.forEach(function(objMonitoring){
-					           
+
+					         
 					          	if(item.$.Symbol==objMonitoring.unit){
-						          	console.log('monitor ask  '+ objMonitoring.ask + ' Now Bid ' + item.Bid);
+					          		console.log('--------------');
+					          		console.log(item.$.Symbol);
+					          		console.log('--------------');
+						          	
 						          	console.log(type);
 
 						          	date = new Date();
@@ -64,21 +68,19 @@ app.get('/telMeWhen',function(req,result){
 				                    hours = String(date.getHours());
 				                    time = hours.concat(".",minutes);
 
-
-
 					            	if(type=="buy"){
+					            		console.log('Initial  ask rate  '+ objMonitoring.ask + ' Now Bid ' + item.Bid);
 					            		if(objMonitoring.rate<item.Bid){
-					            			console.log('send an email');
-
+					            		
 					            			if(objMonitoring.sentLastMailtime==undefined){
 					            				sendMail("first time ",unit);
 					            				objMonitoring.sentLastMailtime = time;
-					            			console.log('1 time');
+					            				console.log('1 time');
 
 					            			}else{
 					            				var timeDiff = time - objMonitoring.sentLastMailtime ;
-					            				console.log('many times');
-					                            if(timeDiff>0.5){
+					            				console.log('timeDiff '+ timeDiff);
+					                            if(timeDiff>0.05){
 					                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
 					                                objMonitoring.sentLastMailtime = time;
 					                                sendMail("more than 5 hit again",unit);
@@ -88,14 +90,39 @@ app.get('/telMeWhen',function(req,result){
 
 					            			}
 					            			
-					            			
 					            		}else{
-					            			console.log('not passed');
+					            			console.log('not passed in buy');
 					            			
 					            		}
 					            	}else{
+					            		console.log('sell');
+					            		console.log('Initial  bid rate  '+ objMonitoring.bid + ' Now Ask ' + item.Ask);
+					            		if(objMonitoring.rate>item.Ask){
+					            			if(objMonitoring.sentLastMailtime==undefined){
+					            				sendMail("first time ",unit);
+					            				objMonitoring.sentLastMailtime = time;
+					            				console.log('1 time');
+
+					            			}else{
+					            				var timeDiff = time - objMonitoring.sentLastMailtime ;
+					            				console.log('timeDiff '+ timeDiff);
+					                            if(timeDiff>0.05){
+					                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
+					                                objMonitoring.sentLastMailtime = time;
+					                                sendMail("more than 5 hit again",unit);
+					                            }else{
+					                              console.log('has send within 5 min '+time);
+					                            }
+
+					            			
+					            			}
+
+					            		}else{
+					            			console.log('not passed in sell');
+					            		}
 					            		
 					            	}
+
 							    }else{
 							    	
 						        }
@@ -103,7 +130,7 @@ app.get('/telMeWhen',function(req,result){
 					          });
 					     });
 					});
-				},5000);	            
+				},30000);	            
 
 		    	monitorRate={id:1,Date:new Date(),unit:unit,type:type,rate:rate,bid:item.Bid,ask:item.Ask,monitor:intervalMonitor};
 				monitorRateList.push(monitorRate);
@@ -125,135 +152,6 @@ app.get('/',function(req,res){
 });
 
 
-app.get('/monitorGraph',function(req,res){
-	res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
- 
-	var unit = req.query.unit;
-	var type = req.query.type;
-	var monitorCount = 0;
-	var nowBid=0,initialAsk=0,c=0;
-	var date,minutes,hours,time;
-	console.log('MONITOR GRAPH');
-	var symbolValue;
-	var symbolMark=new Array();
-	var cycle=0;
-
-	monitorGraph(function(err,result){
-
-		// sendMail();
-
-		result.Rates.Rate.forEach(function(item){
-			var monitorGraph={};
-		    if(item.$.Symbol==unit){
-		    	console.log('added');
-
-		    	var intervalMonitor = setInterval(function(){ 
-		    		callWebService(function(err,result){
-					  
-					  	result.Rates.Rate.forEach(function(item){
-					          monitorGraphList.forEach(function(objMonitoring){
-					            if(item.$.Symbol==objMonitoring.unit){
-									initialAsk = objMonitoring.ask;
-									// console.log('b =' +b);
-									date = new Date();
-				                    minutes = String(date.getMinutes());
-				                    hours = String(date.getHours());
-				                    time = hours.concat(".",minutes);
-
-					            	if(type=="buy"){
-					            		nowBid = parseFloat(item.Bid.toString()).toFixed(5);
-					            		symbolValue = parseFloat(nowBid - initialAsk).toFixed(5);
-					            		console.log('now Bid '+ nowBid + ' initial ask ' + initialAsk + ' = ' + symbolValue);
-					            		if(symbolValue>0){//making profit
-					            			console.log('making profit by buying ');
-					            			symbolMark[cycle]="PLUS";
-					            			if(cycle>1){
-					            				if(symbolMark[cycle]==symbolMark[cycle-1]){
-
-					            					if(objMonitoring.sentLastMailtime==undefined){
-                            
-							                            console.log("SAME - SEND AN EMAIL first time");
-							                            
-							                            objMonitoring.sentLastMailtime = time;
-
-							                          }else{
-							                            var x = time - objMonitoring.sentLastMailtime ;
-							                            if(x>0.5){
-							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
-							                            }else{
-							                              console.log('has send within 5 min '+time);
-							                            }
-							                          }
-
-					            				}else{
-					            					//first cycle
-					            					if(objMonitoring.sentLastMailtime==undefined){
-                            
-							                            console.log("SAME - SEND AN EMAIL first time");
-							                            objMonitoring.sentLastMailtime = time;
-
-							                          }else{
-							                            var x = time - objMonitoring.sentLastMailtime ;
-							                            if(x>0.5){
-							                                console.log("SAME - SEND AN EMAIL pass more than 5 min " + time);
-							                            }else{
-							                              console.log('has send within 5 min '+time);
-							                            }
-							                          }
-					            				}
-
-
-					            			}else{
-					            				console.log('first time making profit');
-			            						//send mail
-
-					            			}
-					            		}else{
-					            			//no profit 
-					            			console.log('no profit ');
-					            			if(Math.abs(symbolValue/objMonitoring.initialRatio)>10){
-					            				console.log('big lost');
-					            				//send mail
-
-					            			}else{
-
-					            			}
-
-					            		}
-					            		cycle=cycle+1;
-
-					            	}else{
-					            		a = parseFloat(item.Bid.toString()).toFixed(5);
-					            		symbolValue = parseFloat(b - a).toFixed(5);
-					            	}
-					       	
-					            }
-					          });  
-					    });
-					});
-					
-
-		    	},monitorGraphTimer);
-
-
-		    	if(type=="buy"){
-		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor,initialRatio:symbolValue};
-		    		
-		    	}else if(type=="sale"){
-		    		monitorGraph={id:monitorCount,unit:unit, Date:new Date(),ask:item.Ask,bid:item.Bid,monitor:intervalMonitor};
-		    	}
-		    	monitorGraphList.push(monitorGraph);
-		    	console.log(monitorGraph);
-		    	monitorCount=monitorCount+1;
-		    }
-		});      
-		res.end("sent");
-	});
-	
-	
-});
-
 var monitorGraphList= new Array();
 
 function monitorGraph(callback){
@@ -264,39 +162,8 @@ function monitorGraph(callback){
 }
 
 
-app.get('/monitorGraphStop',function(req,res){
-	var unit = req.query.unit;
-	console.log("----------------stopping -----------------------------");
-	monitorGraphStop(unit,function(monitorGraphList){
-		
-		console.log(monitorGraphList);
-	});
-});
-
-function monitorGraphStop(unit,callback){
-	monitorGraphList.forEach(function(objMonitoring){
-
-		 if(unit==objMonitoring.unit){
-		 	console.log('going to stop ' + unit);
-		 	console.log(objMonitoring.monitor);
-		 	clearInterval(objMonitoring.monitor);
 
 
-monitorGraphList = monitorGraphList.filter(item => item !== objMonitoring);
-
-console.log("ARRAY" + monitorGraphList); 
-
-
-
-
-		 }else{
-		 	console.log('????	');
-		 }
-	});
-
-	callback(monitorGraphList);
-
-}
 
 app.get('/monitorRateStop',function(req,res){
 	var unit = req.query.unit;
@@ -367,17 +234,17 @@ function sendMail(subject,unit){
 	var mailOptions={
 		to : 'dev@icebergcoldrooms.com.au',
 		subject : subject,
-		text : unit +'has hit the point'
+		text : unit +' has hit the point'
 	}
 	console.log(mailOptions);
 
 	smtpTransport.sendMail(mailOptions, function(error, response){
    	 if(error){
         	console.log(error);
-		res.end("error");
+		//res.end("error");
 	 }else{
         	console.log("Message sent: " + response.message);
-		res.end("sent");
+		//res.end("sent");
     	 }
 });
 
